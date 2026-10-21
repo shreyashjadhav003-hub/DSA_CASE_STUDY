@@ -1,0 +1,101 @@
+
+class AdmissionSystem:
+    def __init__(self, size=10):
+        self.size = size
+        self.table = [[] for _ in range(size)]
+    def hash_function(self, app_id):
+        return app_id % self.size
+    def add_student(self, app_id, name, course, percentage):
+        index = self.hash_function(app_id)
+        for student in self.table[index]:
+            if student["id"] == app_id:
+                print("Application ID already exists!")
+                return
+        student = {
+            "id": app_id,
+            "name": name,
+            "course": course,
+            "percentage": percentage
+        }
+        self.table[index].append(student)
+        print("Admission record added successfully!")
+
+    def search_student(self, app_id):
+        index = self.hash_function(app_id)
+        for student in self.table[index]:
+
+            if student["id"] == app_id:
+                print("\nStudent Found!")
+                print("Application ID:", student["id"])
+                print("Name:", student["name"])
+                print("Course:", student["course"])
+                print("Percentage:", student["percentage"])
+                return
+        print("Admission record not found!")
+    def display_records(self):
+        print("\nADMISSION RECORDS")
+        found = False
+        for bucket in self.table:
+            for student in bucket:
+                print(
+                    "ID:", student["id"],
+                    "| Name:", student["name"],
+                    "| Course:", student["course"],
+                    "| Percentage:", student["percentage"]
+                )
+                found = True
+
+        if not found:
+            print("No admission records available.")
+    def delete_student(self, app_id):
+        index = self.hash_function(app_id)
+        for student in self.table[index]:
+            if student["id"] == app_id:
+                self.table[index].remove(student)
+                print("Admission record deleted successfully!")
+                return
+        print("Admission record not found!")
+
+system = AdmissionSystem()
+while True:
+    print("\nCOLLEGE ADMISSION SYSTEM")
+    print("1. Add Student Record")
+    print("2. Search Student")
+    print("3. Display All Records")
+    print("4. Delete Student Record")
+    print("5. Exit")
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        try:
+            app_id = int(input("Enter Application ID: "))
+            name = input("Enter Student Name: ").strip()
+            course = input("Enter Course: ").strip()
+            percentage = float(input("Enter Percentage: "))
+
+            if not name or not course or not 0 <= percentage <= 100:
+                print("Enter valid student details!")
+            else:
+                system.add_student(app_id, name, course, percentage)
+
+        except ValueError:
+            print("Enter a valid numeric ID and percentage!")
+    elif choice == "2":
+        try:
+            app_id = int(input("Enter Application ID to search: "))
+            system.search_student(app_id)
+        except ValueError:
+            print("Enter a valid Application ID!")
+    elif choice == "3":
+        system.display_records()
+    elif choice == "4":
+        try:
+            app_id = int(input("Enter Application ID to delete: "))
+            system.delete_student(app_id)
+        except ValueError:
+            print("Enter a valid Application ID!")
+    elif choice == "5":
+        print("Exiting College Admission System.")
+        break
+    else:
+        print("Invalid choice! Please try again.")
