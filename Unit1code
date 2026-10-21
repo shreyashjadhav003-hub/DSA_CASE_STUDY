@@ -1,0 +1,131 @@
+
+books = [
+    {"id": 105, "title": "Python Programming", "author": "John"},
+    {"id": 102, "title": "Data Structures", "author": "Mark"},
+    {"id": 104, "title": "Operating Systems", "author": "David"},
+    {"id": 101, "title": "Computer Networks", "author": "Smith"},
+    {"id": 103, "title": "Database Management", "author": "Robert"}
+]
+
+def merge_sort(arr, key):
+    if len(arr) <= 1:
+        return arr
+
+    mid = len(arr) 
+    left = merge_sort(arr[:mid], key)
+    right = merge_sort(arr[mid:], key)
+
+    return merge(left, right, key)
+
+def merge(left, right, key):
+    result = []
+    i = 0
+    j = 0
+
+    while i < len(left) and j < len(right):
+        if left[i][key] <= right[j][key]:
+            result.append(left[i])
+            i += 1
+        else:
+            result.append(right[j])
+            j += 1
+
+    result.extend(left[i:])
+    result.extend(right[j:])
+
+    return result
+
+def display_books(book_list):
+    if not book_list:
+        print("\nNo books available.")
+        return
+
+    print("\n{:<10} {:<30} {:<20}".format(
+        "Book ID", "Title", "Author"
+    ))
+    print("-" * 60)
+
+    for book in book_list:
+        print("{:<10} {:<30} {:<20}".format(
+            book["id"], book["title"], book["author"]
+        ))
+
+def binary_search(book_list, book_id):
+    low = 0
+    high = len(book_list) - 1
+
+    while low <= high:
+        mid = (low + high) // 2
+
+        if book_list[mid]["id"] == book_id:
+            return book_list[mid]
+        elif book_list[mid]["id"] < book_id:
+            low = mid + 1
+        else:
+            high = mid - 1
+
+    return None
+
+def add_book():
+    try:
+        book_id = int(input("Enter Book ID: "))
+
+        if any(book["id"] == book_id for book in books):
+            print("Book ID already exists!")
+            return
+
+        title = input("Enter Book Title: ").strip()
+        author = input("Enter Author Name: ").strip()
+
+        if not title or not author:
+            print("Title and author cannot be empty!")
+            return
+
+        books.append({
+            "id": book_id,
+            "title": title,
+            "author": author
+        })
+
+        print("Book added successfully!")
+
+    except ValueError:
+        print("Please enter a valid numeric Book ID.")
+
+while True:
+    print("\n===== LIBRARY MANAGEMENT SYSTEM =====")
+    print("1. Display All Books")
+    print("2. Sort Books by Title (Merge Sort)")
+    print("3. Search Book by ID (Binary Search)")
+    print("4. Add New Book")
+    print("5. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        display_books(books)
+
+    elif choice == "2":
+        sorted_books = merge_sort(books, "title")
+        display_books(sorted_books)
+
+    elif choice == "3":
+        try:
+            book_id = int(input("Enter Book ID to search: "))
+            sorted_by_id = merge_sort(books, "id")
+            result = binary_search(sorted_by_id, book_id)
+            if result:
+                print("\nBook Found!")
+                display_books([result])
+            else:
+                print("\nBook not found.")
+        except ValueError:
+            print("Please enter a valid numeric Book ID.")
+    elif choice == "4":
+        add_book()
+    elif choice == "5":
+        print("Thank you for using the Library System!")
+        break
+
+    else:
+        print("Invalid choice! Please try again.")
