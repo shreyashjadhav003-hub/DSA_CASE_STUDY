@@ -1,0 +1,105 @@
+class SocialNetwork:
+    def __init__(self):
+        self.users = []
+        self.matrix = []
+    def add_user(self, name):
+        if name in self.users:
+            print("User already exists!")
+            return
+        self.users.append(name)
+        for row in self.matrix:
+            row.append(0)
+        self.matrix.append([0] * len(self.users))
+        print("User added successfully!")
+    def add_friendship(self, user1, user2):
+        if user1 not in self.users or user2 not in self.users:
+            print("User not found!")
+            return
+
+        if user1 == user2:
+            print("A user cannot be friends with themselves!")
+            return
+        i = self.users.index(user1)
+        j = self.users.index(user2)
+
+        if self.matrix[i][j] == 1:
+            print("Friendship already exists!")
+            return
+
+        self.matrix[i][j] = 1
+        self.matrix[j][i] = 1
+        print("Friendship added successfully!")
+
+    def display_matrix(self):
+        if not self.users:
+            print("No users available!")
+            return
+        print("\nAdjacency Matrix")
+        print("     " + " ".join(f"{user:>8}" for user in self.users))
+
+        for i, user in enumerate(self.users):
+            print(f"{user:>5} " +
+                  " ".join(f"{value:>8}" for value in self.matrix[i]))
+    def show_friends(self, name):
+        if name not in self.users:
+            print("User not found!")
+            return
+
+        i = self.users.index(name)
+        friends = [
+            self.users[j]
+            for j in range(len(self.users))
+            if self.matrix[i][j] == 1
+        ]
+
+        if friends:
+            print(f"Friends of {name}: {', '.join(friends)}")
+        else:
+            print(f"{name} has no friends yet.")
+    def check_friendship(self, user1, user2):
+        if user1 not in self.users or user2 not in self.users:
+            print("User not found!")
+            return
+        i = self.users.index(user1)
+        j = self.users.index(user2)
+        if self.matrix[i][j] == 1:
+            print(f"{user1} and {user2} are friends.")
+        else:
+            print(f"{user1} and {user2} are not friends.")
+
+network = SocialNetwork()
+while True:
+    print("\n===== SOCIAL NETWORK SYSTEM =====")
+    print("1. Add User")
+    print("2. Add Friendship")
+    print("3. Display Adjacency Matrix")
+    print("4. Show Friends")
+    print("5. Check Friendship")
+    print("6. Exit")
+
+    choice = input("Enter your choice: ")
+
+    if choice == "1":
+        name = input("Enter username: ").strip()
+        if name:
+            network.add_user(name)
+        else:
+            print("Username cannot be empty!")
+    elif choice == "2":
+        user1 = input("Enter first username: ").strip()
+        user2 = input("Enter second username: ").strip()
+        network.add_friendship(user1, user2)
+    elif choice == "3":
+        network.display_matrix()
+    elif choice == "4":
+        name = input("Enter username: ").strip()
+        network.show_friends(name)
+    elif choice == "5":
+        user1 = input("Enter first username: ").strip()
+        user2 = input("Enter second username: ").strip()
+        network.check_friendship(user1, user2)
+    elif choice == "6":
+        print("Exiting Social Network System.")
+        break
+    else:
+        print("Invalid choice! Please try again.")
